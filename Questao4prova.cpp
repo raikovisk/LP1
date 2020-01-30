@@ -1,48 +1,47 @@
-#include <stdio.h>
+#include <iostream>
 
-int Inscricao;
-float Tpadrao,pontos;
-float t[3];
-float P[3];
-
-void letempo();
-float calcula();
-
-/*float calcule (float t){
-	float Delta, Result;
-
-}*/
-	void letempo(){
-		int i;
-		float Delta, Result;
+	main() {
+	int t[4]; //Tempos de prova
+	int P[4]; // Etapas
+	int ins = 0, vencedor, nvencedor, i, Tpadrao, pontos = 0;
+	float Delta;
+	printf ("\n\t  ------| Classificacao Toneio de Rally |------ \t\n");
+	printf("\n Informe o tempo padrao da prova(em minutos): ");
+	scanf("%d",&Tpadrao);
+	while (ins!=9999)
+	{
+		printf("\n Numero de inscricao da equipe: ");
+		scanf("%d",&ins);
+		if (ins != 9999)
+		{
+		system("cls");	
 		for(i=1;i<=3;i++){
-			printf("\n %d^ tempo(em minutos) da Equipe %d: ",i,Inscricao);
-			scanf("%f",&t[i]);
-				Delta = (Tpadrao-t[i]);
-			if(Delta<3){
+			vencedor = 0;
+			printf("\n %do tempo(em minutos) da Equipe %d: ",i,ins);
+			scanf("%d",&t[i]);
+			Delta = (t[i]-Tpadrao);
+			if(Delta < 3){
 				P[i] = 100;
 				}
-			if((Delta >= 3) && (Delta <= 5)){
+			else if((Delta >= 3) && (Delta <= 5)){
 				P[i] = 80;
 				}
-			else{
+			else if (Delta > 5){
 			P[i] = 80-(Delta-5)/5;
 			}
+			pontos = pontos+P[i];
 		}
+		if (vencedor < pontos){
+			vencedor = pontos;
+			nvencedor = ins;
+			}
 	}
-	void mostradados(){
-		system ("cls");
-		printf ("\n Equipe: %d",Inscricao);
-		printf ("\n Pontos da 1^ Etapa %.2f \n Pontos da 2^ Etapa %.2f \n Pontos da 3^ Etapa %.2f",P[1],P[2],P[3]);
-		printf ("\n Total de Pontos Obtidos: %.2f",P[1]+P[2]+P[3]);
+	printf ("\n ----------------- \n");		
+	printf ("\n Equipe: %d",ins);
+	printf ("\n Pontos da 1a Etapa %d \n Pontos da 2a Etapa %d \n Pontos da 3a Etapa %d",P[1],P[2],P[3]);
+	printf ("\n Total de Pontos Obtidos: %d \n",pontos);
+	printf ("\n Obs: inscricao 9999 para Sair");
+	printf ("\n ----------------- \n");
 	}
-	main(){	
-		while(Inscricao != 9999){
-		printf("\n Informe o Numero da Inscricao ou 9999 para Sair: ");
-		scanf("%d",&Inscricao);
-		printf("\n Informe o tempo minimo de prova(em minutos) de prova: ");
-		scanf("%d",&Tpadrao);
-		letempo();
-		mostradados();
-	}
+	printf("\n A equipe vencedora foi %d com %d pontos \n", nvencedor, vencedor);	
 }
