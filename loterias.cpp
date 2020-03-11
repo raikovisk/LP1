@@ -1,109 +1,162 @@
+/*DESENVOLVIDO POR:
+RAISSON ALMEIDA DE SANTANA E ITALO;
+3ºSEMESTRE DE SISTEMA DE INFORMAÇÃO  - UNEB CAMPUS II
+ORIENTADOR POR - JOSÉ ROBERTO
+*/
+
 #include<stdio.h>
-#include<iostream>
-#define LIN  4
-#define COL  5
+#include<windows.h>
+#include<locale.h>
+#define LIN  6
+#define COL  10
 
-void AbreArq();
-void exibe(int aux[LIN][COL]);
-void savedat(int aux[LIN][COL]);
+void carregadados();
+void natela(int aux[LIN][COL]);
+void exiberesult();
+void savedat();
 void contador(int aux[LIN][COL]);//passa elementos a serem procurados e registra suas repeticoes
-int procura(int mat[LIN][COL],int elemento);//procura por elementos repetidos
-int busca(int ele,int cont); //funcao recursiva de busca
-int A[LIN][COL],i,j,am,an, contados[36];
-FILE *arq;
-FILE *save;
+void repetidolinha();
+void repetidocoluna();
+void loading();
+int busca(int elemento,int achou); //funcao recursiva de busca
+int R[LIN][COL],A[LIN][COL],i,j;
+int numlinha,numcoluna,replinha=0,repcoluna=0;
 
-struct reg{ //estrutura dos valores guardados. numero e suas repeticoes <- add linha e coluna do elemento para fazer busca depois
-	int ele; // elemento
-	int rep; //quantidade de repeticoes
-};
-struct reg resultado[36];
 main(){
-  	AbreArq();
-  	exibe(A);
-  	contador(A);
-  	savedat(A);
-	printf("\n\tELEMETO\tREPETICOES\n");
+	setlocale(LC_ALL, "Portuguese");
+    carregadados(); 
+    contador(A);
+    repetidocoluna();
+    savedat();
+    exiberesult();
+    getchar();
+    getchar();	  
 }
-
-void AbreArq() 
-{ arq = fopen("loterias.txt","r");
-	if(arq == NULL){
-	printf("\nErro ao abrir arquivo!");
-   	return;}
-   	for(i = 0; i < LIN; i++){
-   		for(j = 0; j < COL; j++){
-   			fscanf(arq,"%d",&A[i][j]);
-		   }
-	   }
-	printf("\n#### MATRIZ CARREGADA ####");
-  	fclose(arq);
+void carregadados(){
+	int cont=1;
+        for(int l=0;l<LIN;l++)
+        {
+            for(int c=0;c<COL;c++)
+            {
+            	A[l][c] = cont++;
+            }
+        }
+	//printf("\n####### CARTELA DA MEGA SENA #######");
+    return;
 }
-int busca(int x,int achou){ // nova funcao recursiva para buscar numeros repetidos
-	i=0;j=0;
-	if(i < LIN){
-		if(j < COL){
-			if(x == A[i][j]){
-				achou = achou+1;
-				j++;
-				busca(A[i][j],achou);
-			}
-			i++;
-			busca(A[i][0],achou);
-		}
-	}return achou;
+void natela(int aux[LIN][COL]){
+    printf("\n----------------------------------------------------------------------------------------\n");
+    for(i=0;i<LIN;i++){
+        for(j=0;j<COL;j++)
+        {
+            printf("%4d\t",aux[i][j]);
+        }
+        printf("\n");
+    }    printf("\n----------------------------------------------------------------------------------------\n");
 }
-/*int procura(int mat[LIN][COL],int elemento){ //procura por elementos repetidos <--- possivel erro
-	int achou;
-	for(i=0; i < LIN; i++){
-		for(j=0; j < COL; j++){
-			if(elemento == mat[i][j]){
-				achou = achou+1;
-			}
-		}
-		printf("%d \t %d",mat[i][j],achou);
-	}
-	
-	return achou;
-}*/
+int busca(int elemento,int achou){
+	FILE *arq;
+	int aux;
+    if(elemento == -1){
+        return -1;
+    }
+    else{
+    	arq = fopen("loterias.txt","r");	
+    	if(arq == NULL){
+        	printf("\nErro ao abrir arquivo na busca!");
+   	 	}
+		fseek(arq, 0, SEEK_SET);
+    	while(!feof(arq)){
+    	fscanf(arq,"%d",&aux);
+    		if(aux == elemento){
+        	achou = achou+1;	
+    		}
+    	}fclose(arq);	
+    }
+return achou;
+}
 void contador(int aux[LIN][COL]){ //passa valor para ser procurado e guarda resultado <-- ou erro aqui
-	int z=0;
-	for(i=0; i < LIN; i++){
-		for(j=0; j < COL; j++){
-			resultado[z].ele = aux[i][j];
-			resultado[z].rep = busca(A[i][j],0);
-			//printf("\n%d ",aux[i][j]);
-			//printf("\n%d ",procura(A,aux[i][j]));
-			z=z+1;
+    for(int i=0; i < LIN; i++){
+        for(int j=0; j < COL; j++){
+    		R[i][j]=busca(A[i][j],0);
+    		if((R[i][j]>replinha)){
+    			numlinha = A[i][j]; //acha numero mais repetido
+    			replinha = R[i][j]; //suas repeticoes
 			}
-		}
-		
-	}
-void exibe(int aux[LIN][COL]){
-	printf("\n--------------------------------------------\n");
-	for(i=0;i<LIN;i++){
-		for(j=0;j<COL;j++)
-		{
-			printf("%4d\t",aux[i][j]);
-		}
-		printf("\n");
-	}
-	printf("\n--------------------------------------------\n");
+        }
+    }
 }
-void savedat(int aux[LIN][COL])
-{
-	save = fopen("teste.txt","wt");
-	if(save == NULL){
-		printf("\nErro ao salvar data!");
-		return;}
-	int l,c;
-	for(l=0;l<LIN;l++){
-		for(c=0;c<COL;c++)
-		{
-			fprintf(save,"%4d\t",aux[l][c]);
-		}
-		fprintf(save,"\n");
-	}
-	fclose(save);
-	printf("\nARQUIVO SALVO COM SUCESSO!\n");
+void exiberesult(){
+	char buf[BUFSIZ] ;
+    FILE *result;
+    result = fopen("resultadomega.txt","r");
+    if(result == NULL){
+        printf("\nErro ao ler resultado!");
+        return;}
+        fseek(result,0,SEEK_SET);
+     while(!feof(result)) {
+        fgets(buf, BUFSIZ, result) ;
+        printf("%s", buf) ;
+    }
+}
+void repetidocoluna(){
+    {for(int j=0; j < COL; j++)
+        for(int i=0; i < LIN; i++){
+    		if((R[i][j]>repcoluna)){
+    			numcoluna = A[i][j]; //acha numero mais repetido
+    			repcoluna = R[i][j]; //suas repeticoes
+			}
+        }
+    }
+}
+void loading(){
+	int i, j;
+   system ("cls");
+   printf ("\n\n\t\tCARREGANDO ARQUIVOS: \n\n");             
+   for (i = 30; i <= 100; i++){                
+      //printf ("\r  %d%%", i);      
+      printf ("  %d%%\r", i);
+      fflush (stdout);                         
+      for (j = 0; j < i; j++){
+        if (!j) // Da espaco na barra pra nao enconstar na borda da tela
+        printf ("");  
+        printf ("#");
+        Sleep(1);
+      }            
+	}system ("cls");
+}
+void savedat(){
+FILE *save;
+    save = fopen("resultadomega.txt","wt");
+    if(save == NULL){
+        printf("\nErro ao salvar data!");
+        return;}
+    int l,c;
+    fprintf(save,"\n----------------------------------------------------------------------------------------\n");
+    fprintf(save,"\t\t********** CARTELA DA MEGA SENA **********");
+    fprintf(save,"\n----------------------------------------------------------------------------------------\n");
+    for(l=0;l<LIN;l++){
+        for(c=0;c<COL;c++)
+        {
+            fprintf(save," %d\t",A[l][c]);
+        }
+        fprintf(save,"\n");
+    }
+    fprintf(save,"\n----------------------------------------------------------------------------------------\n");
+    fprintf(save,"\t\t********** REPETICÕES DE CADA NÚMERO **********");
+    fprintf(save,"\n----------------------------------------------------------------------------------------\n");
+    for(l=0;l<LIN;l++){
+        for(c=0;c<COL;c++)
+        {
+            fprintf(save," %d\t",R[l][c]);
+        }
+        fprintf(save,"\n");
+    }
+    fprintf(save,"\n----------------------------------------------------------------------------------------\n");
+    fprintf(save,"NUMERO QUE MAIS SE REPETE POR LINHA:\n  %d - %d REPETIÇÕES.\n",numlinha,replinha);
+    fprintf(save,"\nNUMERO QUE MAIS SE REPETE POR COLUNA:\n  %d - %d REPETIÇÕES.",numcoluna,repcoluna);
+    fclose(save);
+    printf("\n\n\t\tPROGRAMA EXECUTADO COM SUCESSO!"); 
+    Sleep(3300);
+    loading();
 }
