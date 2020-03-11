@@ -1,9 +1,3 @@
-/*DESENVOLVIDO POR:
-RAISSON ALMEIDA DE SANTANA
-3ºSEMESTRE DE SISTEMA DE INFORMAÇÃO  - UNEB CAMPUS II
-ORIENTADOR POR - JOSÉ ROBERTO
-*/
-
 #include<stdio.h>
 #include<windows.h>
 #include<locale.h>
@@ -14,18 +8,18 @@ void carregadados();
 void natela(int aux[LIN][COL]);
 void exiberesult();
 void savedat();
-void contador(int aux[LIN][COL]);//passa elementos a serem procurados e registra suas repeticoes
+void contador();//passa elementos a serem procurados e registra suas repeticoes
 void repetidolinha();
 void repetidocoluna();
 void loading();
-int busca(int elemento,int achou); //funcao recursiva de busca
-int R[LIN][COL],A[LIN][COL],i,j;
+int busca(int elemento,int achou); //PROCURA REPETICOES
+int R[LIN][COL],A[LIN][COL];
 int numlinha,numcoluna,replinha=0,repcoluna=0;
 
 main(){
 	setlocale(LC_ALL, "Portuguese");
     carregadados(); 
-    contador(A);
+    contador();
     repetidocoluna();
     savedat();
     exiberesult();
@@ -41,19 +35,9 @@ void carregadados(){
             	A[l][c] = cont++;
             }
         }
-	//printf("\n####### CARTELA DA MEGA SENA #######");
     return;
 }
-void natela(int aux[LIN][COL]){
-    printf("\n----------------------------------------------------------------------------------------\n");
-    for(i=0;i<LIN;i++){
-        for(j=0;j<COL;j++)
-        {
-            printf("%4d\t",aux[i][j]);
-        }
-        printf("\n");
-    }    printf("\n----------------------------------------------------------------------------------------\n");
-}
+
 int busca(int elemento,int achou){
 	FILE *arq;
 	int aux;
@@ -75,7 +59,7 @@ int busca(int elemento,int achou){
     }
 return achou;
 }
-void contador(int aux[LIN][COL]){ //passa valor para ser procurado e guarda resultado <-- ou erro aqui
+void contador(){ //passa valor para ser procurado e guarda resultado <-- ou erro aqui
     for(int i=0; i < LIN; i++){
         for(int j=0; j < COL; j++){
     		R[i][j]=busca(A[i][j],0);
@@ -127,13 +111,13 @@ void loading(){
 }
 void savedat(){
 FILE *save;
-    save = fopen("resultadomega.txt","wt");
+    save = fopen("resultado.txt","wt");
     if(save == NULL){
         printf("\nErro ao salvar data!");
         return;}
     int l,c;
     fprintf(save,"\n----------------------------------------------------------------------------------------\n");
-    fprintf(save,"\t\t********** CARTELA DA MEGA SENA **********");
+    fprintf(save,"\t\t********** MEGA SENA **********");
     fprintf(save,"\n----------------------------------------------------------------------------------------\n");
     for(l=0;l<LIN;l++){
         for(c=0;c<COL;c++)
@@ -143,7 +127,7 @@ FILE *save;
         fprintf(save,"\n");
     }
     fprintf(save,"\n----------------------------------------------------------------------------------------\n");
-    fprintf(save,"\t\t********** REPETICÕES DE CADA NÚMERO **********");
+    fprintf(save,"\t\t********** QUANTIDADE DE SORTEIO DE CADA NÚMERO **********");
     fprintf(save,"\n----------------------------------------------------------------------------------------\n");
     for(l=0;l<LIN;l++){
         for(c=0;c<COL;c++)
@@ -153,8 +137,8 @@ FILE *save;
         fprintf(save,"\n");
     }
     fprintf(save,"\n----------------------------------------------------------------------------------------\n");
-    fprintf(save,"NUMERO QUE MAIS SE REPETE POR LINHA:\n  %d - %d REPETIÇÕES.\n",numlinha,replinha);
-    fprintf(save,"\nNUMERO QUE MAIS SE REPETE POR COLUNA:\n  %d - %d REPETIÇÕES.",numcoluna,repcoluna);
+    fprintf(save," NUMERO QUE MAIS SE REPETE POR LINHA:\n %d - %d REPETIÇÕES.\n",numlinha,replinha);
+    fprintf(save,"\n NUMERO QUE MAIS SE REPETE POR COLUNA:\n %d - %d REPETIÇÕES.",numcoluna,repcoluna);
     fclose(save);
     printf("\n\n\t\tPROGRAMA EXECUTADO COM SUCESSO!"); 
     Sleep(3300);
