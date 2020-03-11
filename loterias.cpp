@@ -5,7 +5,6 @@
 #define COL  10
 
 void carregadados();
-void natela(int aux[LIN][COL]);
 void exiberesult();
 void savedat();
 void contador();//passa elementos a serem procurados e registra suas repeticoes
